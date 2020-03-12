@@ -29,76 +29,13 @@ from setuptools.command.install import install
 # Get the program version from another file.
 exec(open('emphaseis/version.py').read())
 
-with open('README.md', 'rb') as readme:
-    LONG_DESCRIPTION = readme.read().decode()
-
-
-class Build(build):
-    """
-    The build process.
-    """
-
-    def run(self):
-        build.run(self)  # Run original build code
-
-
-class Install(install):
-    """
-    The install process.
-    """
-
-    def run(self):
-        install.run(self)  # Run original install code
-
-
-class Clean(Command):
-    """
-    Custom clean command that really cleans up everything, except for:
-      - the compiled *.so file needed when running the programs
-      - setuptools-*.egg file needed when running this script
-    """
-    user_options = []
-
-    def initialize_options(self):
-        self.cwd = None
-
-    def finalize_options(self):
-        self.cwd = os.getcwd()
-
-    def run(self):
-        assert os.getcwd() == self.cwd, 'Must be in package root: %s' % self.cwd
-
-        delete_directories = []
-        for root, dir_names, filenames in os.walk(self.cwd):
-            for dir_name in fnmatch.filter(dir_names, '*.egg-info'):
-                delete_directories.append(os.path.join(root, dir_name))
-            for dir_name in fnmatch.filter(dir_names, 'build'):
-                delete_directories.append(os.path.join(root, dir_name))
-            for dir_name in fnmatch.filter(dir_names, '__pycache__'):
-                delete_directories.append(os.path.join(root, dir_name))
-        for delete_directory in delete_directories:
-            print('Deleting directory:', delete_directory)
-            shutil.rmtree(delete_directory)
-
-        delete_files = []
-        for root, dir_names, filenames in os.walk(self.cwd):
-            for filename in fnmatch.filter(filenames, 'setuptools*.zip'):
-                delete_files.append(os.path.join(root, filename))
-            for filename in fnmatch.filter(filenames, '*.o'):
-                delete_files.append(os.path.join(root, filename))
-            for filename in fnmatch.filter(filenames, '*.pyc'):
-                delete_files.append(os.path.join(root, filename))
-        for delete_file in delete_files:
-            print('Deleting file:', delete_file)
-            os.remove(delete_file)
-
 
 setup(name='emphaseis',
       version=__version__,
-      description='emPHASEis: a simple read phaser for aligned amplicons',
+      description='emPHASEis: Putting the emPHASEis on the right sylLABle. A next-generation read phaser for diagnostic amplicons.',
       long_description=LONG_DESCRIPTION,
       long_description_content_type="text/markdown",
-      url='http://github.com/aineniamh/em-phase-is',
+      url='http://github.com/aineniamh/emPHASEis',
       author='Aine O Toole,
       author_email='aine.otoole@ed.ac.uk',
       license='GPL',
